@@ -1,5 +1,5 @@
 from flask import current_app, Flask
-from config import DevelopmentConfig
+from config import DevelopmentConfig, TestingConfig
 
 def create_app(config=DevelopmentConfig):
     """Create an application instance with the desired configuration.

@@ -1,7 +1,6 @@
-from flask import current_app, Flask
+from flask import current_app, Flask, g
 from config import DevelopmentConfig, TestingConfig
-from firestore import Firestore
-
+import firestore
 def create_app(config=DevelopmentConfig):
     """Create an application instance with the desired configuration.
 
@@ -12,11 +11,13 @@ def create_app(config=DevelopmentConfig):
     app.config.from_object(config)
 
     # Register Firestore Database
-    #with app.app_context():
-    #    db = Firestore()
-
+    
     # Register Blueprints
+    from app.books.routes import bp as books_bp
+    from app.auth.routes import bp as auth_bp
 
+    app.register_blueprint(books_bp)
+    app.register_blueprint(auth_bp)
     # Register Extensions
 
     # Test route
@@ -25,6 +26,7 @@ def create_app(config=DevelopmentConfig):
         return 'Hello, Flask!'
     
     return app
+        
 
 
 

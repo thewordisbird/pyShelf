@@ -9,11 +9,12 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     DEBUG = True
     FIREBASE_LOCAL_KEY = './keys/pyshelf-firestore.json'
-    FIREBASE_PROJECT = {'project': 'py-firestore-ebc03'}
+    FIREBASE_PROJECT = {'project': 'pyshself'}
     PAGE_LIMIT = 10
 
 class TestingConfig(Config):
     TESTING = True
     FIREBASE_LOCAL_KEY = './keys/pyshelf-firestore.json'
-    FIREBASE_PROJECT = {'project': 'py-firestore-ebc03'}
+    FIREBASE_PROJECT = {'project': 'pyshself'}
     PAGE_LIMIT = 10
+    WTF_CSRF_ENABLED = False

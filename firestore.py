@@ -15,6 +15,7 @@ cred = credentials.Certificate('./keys/pyshelf-firestore.json')
 #cred = credentials.Certificate(app.config('FIRESTORE_CREDENTIALS'))
 firebase_admin.initialize_app(cred, {'project': 'pyshself'})
 
+
 def document_to_dict(doc):
     """Convert a Firestore document to dictionary"""
     if not doc.exists:
@@ -22,6 +23,7 @@ def document_to_dict(doc):
     doc_dict = doc.to_dict()
     doc_dict['id'] = doc.id
     return doc_dict
+
 
 def create(data, book_id=None):
     db = firestore.client()
@@ -31,13 +33,16 @@ def create(data, book_id=None):
     # book info page. 
     return document_to_dict(book_ref.get())
 
+
 update = create
+
 
 def read(book_id):
     db = firestore.client()
     book_ref = db.collection('Book').document(book_id)
     doc = book_ref.get()
     return document_to_dict(doc)
+
 
 def read_all():
     db = firestore.client()
@@ -46,6 +51,7 @@ def read_all():
     docs = query.stream()
     docs = list(map(document_to_dict, docs))
     return docs
+
 
 PAGE_LIMIT = 10
 def read_limit(limit=PAGE_LIMIT, start_after=None):
@@ -66,8 +72,6 @@ def read_limit(limit=PAGE_LIMIT, start_after=None):
         last_title = docs[-1]['title']
     return docs, last_title
 
-
-    
 
 def delete(book_id):
     db = firestore.client()

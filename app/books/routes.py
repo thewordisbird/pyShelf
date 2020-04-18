@@ -12,6 +12,7 @@ def clean_form_data(data):
         del data['submit']
     return data
 
+
 @bp.route('/', methods=['GET', 'POST'])
 def index():
     """Load feed of all books for user
@@ -41,14 +42,14 @@ def add():
         return redirect(url_for('books.book_view', book_id=book['id']))
     return render_template('book_form.html', form=form)
 
+
 @bp.route('/update/<book_id>', methods=['GET', 'POST'])
 def update(book_id):
-    print('in update')
+    """Load BookForm with book information to edit book information in the database"""
     book = firestore.read(book_id)
     form = BookForm(data=book)
 
     if form.validate_on_submit():
-        print('validating')
         book = firestore.update(clean_form_data(form.data), book['id'])
         return redirect(url_for('books.book_view', book_id=book['id']))
     return render_template('book_form.html', form=form)
@@ -56,11 +57,16 @@ def update(book_id):
 
 @bp.route('/book/<book_id>', methods=['GET'])
 def book_view(book_id):
+    """Load page to view induvidual book information"""
     book = firestore.read(book_id)
     return render_template('book_view.html', book=book)
 
 
-
+@bp.route('/delete/<book_id>', methods=['GET'])
+def delete(book_id):
+    """Delete the book from the database"""
+    firestore.delete(book_id)
+    return redirect(url_for('books.index'))
 
 
     

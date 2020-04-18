@@ -219,6 +219,17 @@ def test_book_view_handle_load(app, client, fs):
     
     fs.delete(book['id'])
 
+def test_delete_handle_request(app, client, fs):
+    data ={
+        'title': 'Test Title',
+        'author': 'Test Author',
+        'publication_date': 'Test Date Published',
+        'description': 'Test Description'
+    }
 
+    book = fs.create(data)
+    rv = client.get('/delete/'+book['id'])
+    assert rv.status == '302 FOUND'
+    assert fs.read(book['id']) == None
 
         

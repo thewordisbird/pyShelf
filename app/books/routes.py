@@ -1,7 +1,9 @@
-from flask import Blueprint, session, jsonify, render_template, request, redirect, url_for
-import firestore
-
+from flask import Blueprint, session, jsonify, render_template, request, redirect, url_for, jsonify
 from .forms import BookForm
+import firestore
+from datetime import datetime
+
+
 
 bp = Blueprint('books', __name__)
 
@@ -35,8 +37,12 @@ def index():
 def add():
     """Load BookForm to add a book to the database"""
     form = BookForm()
-
+    
+    print(request.form.to_dict())
+    print(form.is_submitted(), form.validate(), form.errors)
+  
     if form.validate_on_submit():
+        print('validation')
         book = firestore.create(clean_form_data(form.data))
         # Redirect to book view page
         return redirect(url_for('books.book_view', book_id=book['id']))
@@ -46,7 +52,7 @@ def add():
 @bp.route('/update/<book_id>', methods=['GET', 'POST'])
 def update(book_id):
     """Load BookForm with book information to edit book information in the database"""
-    book = firestore.read(book_id)
+    book = firestore.read(book_id, False)
     form = BookForm(data=book)
 
     if form.validate_on_submit():

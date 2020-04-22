@@ -1,2 +1,37 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
+{% block content %}
+<div class="container">
+    <h4>Book</h4>
+    <div class="btn-group">
+        <a href="{{ url_for('books.update', book_id=book['id']) }}" class="waves-effect waves-light btn">Edit</a>
+        <a href="{{ url_for('books.delete', book_id=book['id']) }}"class="waves-effect waves-light red lighten-2 btn">Delete</a>
+    </div>
+    
+    
+    <div class="col s12 m8 offset-m2 l6 offset-l3">
+        <div class="card-panel grey lighten-5 z-depth-1">
+          <div class="row valign-wrapper">
+            <div class="col s12 m2">
+            {% if book['cover_image'] %}
+                <img src="{{ book['cover_image'] }}" alt="" class="responsive-img">
+            {% else %}
+                <img src="https://via.placeholder.com/150" alt="" class="responsive-img">
+            {% endif %}
+            </div>
+            <div class="col s12 m10">
+              <span class="black-text">
+                <h5>{{ book['title'] }}</h5>
+                <p><span class="">{{ book['publication_date'] }}</span><br>
+                    {{ book['author'] }}<br>
+                    {{ book['description'] }}</p>              
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+    
+
+
+{% endblock %}

@@ -1,5 +1,5 @@
 import pytest
-from datetime import date
+from datetime import datetime
 from flask import current_app, session, template_rendered
 from contextlib import contextmanager
 from app import create_app
@@ -40,8 +40,6 @@ def captured_templates(app):
     finally:
         template_rendered.disconnect(record, app)
 
-
-
 # ========== Firestore Module Tests ==========
 @pytest.fixture()
 def fs(app):
@@ -65,7 +63,7 @@ def test_firestore_create(fs):
     test_data = {
         'title': 'Test Title',
         'author': 'Test Author',
-        'publication_date': "11/13/1984",
+        'publication_date': datetime(2020, 2, 13),
         'description': 'Test Description'
     }
 
@@ -77,7 +75,7 @@ def test_firestore_update(fs):
     test_data = {
         'title': 'Test Title',
         'author': 'Test Author',
-        'publication_date': "11/13/1984",
+        'publication_date': datetime(2020, 2, 13),
         'description': 'Test Description'
     }
 
@@ -85,7 +83,7 @@ def test_firestore_update(fs):
     update_data = {
         'title': 'Update Title',
         'author': 'Test Author',
-        'publication_date': "11/13/1984",
+        'publication_date': datetime(2020, 2, 13),
         'description': 'Test Description'
     }
 
@@ -140,7 +138,7 @@ def test_add_handle_form_submit(client, fs):
     data ={
         'title': 'Test Title',
         'author': 'Test Author',
-        'publication_date': 'Test Date Published',
+        'publication_date': datetime(2020, 2, 13).strftime('%m/%d/%Y'),
         'description': 'Test Description'
     }
     form = forms.BookForm(data=data)
@@ -161,7 +159,7 @@ def test_update_handle_load(app, client, fs):
     data ={
         'title': 'Test Title',
         'author': 'Test Author',
-        'publication_date': 'Test Date Published',
+        'publication_date': datetime(2020, 2, 13),
         'description': 'Test Description'
     }
 
@@ -181,11 +179,11 @@ def test_update_handle_form_submit(client, fs):
     data ={
         'title': 'Test Title',
         'author': 'Test Author',
-        'publication_date': 'Test Date Published',
+        'publication_date': datetime(2020, 2, 13),
         'description': 'Test Description'
     }
 
-    book = fs.create(data)
+    book = fs.format_time(fs.create(data))
 
     # Modify book data and populate form data
     book['title'] = 'Test Title Updated'
@@ -204,7 +202,7 @@ def test_book_view_handle_load(app, client, fs):
     data ={
         'title': 'Test Title',
         'author': 'Test Author',
-        'publication_date': 'Test Date Published',
+        'publication_date': datetime(2020, 2, 13),
         'description': 'Test Description'
     }
 
@@ -223,7 +221,7 @@ def test_delete_handle_request(app, client, fs):
     data ={
         'title': 'Test Title',
         'author': 'Test Author',
-        'publication_date': 'Test Date Published',
+        'publication_date': datetime(2020, 2, 13),
         'description': 'Test Description'
     }
 

@@ -1,8 +1,95 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% for book in books %}
-    <h1>book['title']</h1>
-{% endfor %}
+    <div id="list-content" class="container">
+        {% for book in books %}
+            <div class="col s12 m8 offset-m2 l6 offset-l3">
+                <div class="card-panel grey lighten-5 z-depth-1">
+                    <div class="row valign-wrapper">
+                        <div class="col s12 m2">
+                            {% if book['cover_image'] %}
+                                <a href="{{ url_for('books.book_view', book_id=book['id']) }}"><img src="{{ book['cover_image'] }}" alt="" class="responsive-img"></a>
+                            {% else %}
+                                <a href="{{ url_for('books.book_view', book_id=book['id']) }}"><img src="https://via.placeholder.com/150" alt="" class="responsive-img"></a>
+                                
+                            {% endif %}
+                        </div>
+                        <div class="col s12 m10">
+                            <span class="black-text">
+                                <h5><a href="{{ url_for('books.book_view', book_id=book['id']) }}">{{ book['title'] }}</a></h5>
+                                <p><span class="">{{ book['publication_date'] }}</span><br>
+                                {{ book['author'] }}<br>
+                                {{ book['description'] }}</p>              
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% if last_title %}
+        <div class="pager">            
+            <a href="?start_after={{ last_title }}" class="waves-effect waves-light btn">Load More</a>
+        </div>
+        {% endif %}
 
+        <!-- Floating Add-->
+        <div class="fixed-action-btn">
+            <a href="{{ url_for('books.add') }}" class="btn-floating btn-large red lighten-2">
+              <i class="large material-icons">add</i>
+            </a>
+          </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.fixed-action-btn');
+        var instances = M.FloatingActionButton.init(elems);
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        $( window ).scroll(function() {
+            var lastTitle = "{{ last_title }}";
+            var container = document.getElementById("list-content");
+            var bottom = document.body.scrollHeight - window.innerHeight;
+            
+            if (document.body.scrollTop == bottom || document.documentElement.scrollTop == bottom) {
+                $.post("{{ url_for('books.index') }}", 
+                    function(data){
+                        if (data){
+                            for (book of data){
+                                var viewURL = function(){"{{ url_for('books.book_view', book_id="book.id") }}"};
+                                if (book.cover_image){
+                                    bookCoverPath = `<a href="` + viewURL +`"><img src="` + book.cover_image + `" alt="" class="responsive-img"></a>`
+                                }else{
+                                    bookCoverPath =`<a href="` + viewURL +`"><img src="https://via.placeholder.com/150" alt="" class="responsive-img"></a>`
+                                };
+                                htmlString = `<div class="col s12 m8 offset-m2 l6 offset-l3">
+                                    <div class="card-panel grey lighten-5 z-depth-1">
+                                        <div class="row valign-wrapper">
+                                            <div class="col s12 m2">` +
+                                                bookCoverPath +
+                                            `</div>
+                                            <div class="col s12 m10">
+                                                <span class="black-text">
+                                                    <h5><a href="#">` + book.title + `</a></h5>
+                                                    <p><span class="">` + book.publication_date + `</span><br>`
+                                                    + book.author + `<br>`
+                                                    + book.description + `</p>              
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                                container.innerHTML += htmlString;     
+                            };
+                        };                        
+                    }, "json");
+                }
+            });
+        });
+</script>
 {% endblock %}

@@ -1,3 +1,5 @@
+import os
+from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -7,9 +9,14 @@ from flask import current_app, session
 #cred = credentials.ApplicationDefault()
 # For Locally Deployed App:
 '''
-cred = credentials.Certificate(current_app.config['FIREBASE_LOCAL_KEY'])
+cred = credentials.Certificate(current_app.config['FIREBASE_KEY_URL'])
 #cred = credentials.Certificate(app.config('FIRESTORE_CREDENTIALS'))
 firebase_admin.initialize_app(cred, current_app.config['FIREBASE_PROJECT'])
+
+cred = credentials.Certificate(current_app.config['FIREBASE_KEY_URL'])
+#cred = credentials.Certificate(app.config('FIRESTORE_CREDENTIALS'))
+firebase_admin.initialize_app(cred, current_app.config['FIREBASE_PROJECT'])
+
 '''
 cred = credentials.Certificate('./keys/pyshelf-firestore.json')
 #cred = credentials.Certificate(app.config('FIRESTORE_CREDENTIALS'))
@@ -24,6 +31,14 @@ def document_to_dict(doc):
     doc_dict['id'] = doc.id
     return doc_dict
 
+def format_time(doc, format='%m/%d/%Y'):
+    for k,v in doc.items():     
+        if isinstance(v, datetime):
+            print(k,v)
+            doc[k] = v.strftime(format)
+            print(doc[k])
+    return doc
+
 
 def create(data, book_id=None):
     db = firestore.client()
@@ -37,11 +52,16 @@ def create(data, book_id=None):
 update = create
 
 
-def read(book_id):
+def read(book_id, time_format=True):
     db = firestore.client()
     book_ref = db.collection('Book').document(book_id)
     doc = book_ref.get()
-    return document_to_dict(doc)
+    book = document_to_dict(doc)
+    if book is not None:
+        if time_format:
+            format_time(book)
+        return book
+    return None
 
 
 def read_all():
@@ -50,8 +70,9 @@ def read_all():
 
     docs = query.stream()
     docs = list(map(document_to_dict, docs))
-    return docs
+    docs = list(map(format_time, docs))
 
+    return docs
 
 PAGE_LIMIT = 10
 def read_limit(limit=PAGE_LIMIT, start_after=None):
@@ -65,6 +86,9 @@ def read_limit(limit=PAGE_LIMIT, start_after=None):
     
     docs = query.stream()
     docs = list(map(document_to_dict, docs))
+    
+    docs = list(map(format_time, docs))
+    
 
     last_title = None
     if limit == len(docs):

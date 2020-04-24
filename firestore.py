@@ -31,7 +31,7 @@ def document_to_dict(doc):
     doc_dict['id'] = doc.id
     return doc_dict
 
-def format_time(doc, format='%m/%d/%Y'):
+def format_date(doc, format='%m/%d/%Y'):
     for k,v in doc.items():     
         if isinstance(v, datetime):
             print(k,v)
@@ -87,7 +87,7 @@ def read_limit(limit=PAGE_LIMIT, start_after=None):
     docs = query.stream()
     docs = list(map(document_to_dict, docs))
     
-    docs = list(map(format_time, docs))
+    docs = list(map(format_date, docs))
     
 
     last_title = None

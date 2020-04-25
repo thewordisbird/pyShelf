@@ -1,5 +1,5 @@
 from flask import Blueprint, session, jsonify, render_template, request, redirect, url_for, jsonify
-from .forms import BookForm, LoginForm
+from .forms import BookForm
 import firestore
 from datetime import datetime
 
@@ -36,27 +36,17 @@ def index():
 @bp.route('/add', methods=['GET', 'POST'])
 def add():
     """Load BookForm to add a book to the database"""
-    print('Im HERE')
-    form = BookForms()
+    form = BookForm()
     
     print(request.form.to_dict())
     print(form.is_submitted(), form.validate(), form.errors)
   
     if form.validate_on_submit():
+        print('validation')
         book = firestore.create(clean_form_data(form.data))
-
-        # Upload image to google cloud store
-        #image_url = upload_image_file(request.files.get('image'))
-
         # Redirect to book view page
         return redirect(url_for('books.book_view', book_id=book['id']))
     return render_template('book_form.html', form=form)
-
-@bp.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-
-    return render_template('login.html', form=form)
 
 
 @bp.route('/update/<book_id>', methods=['GET', 'POST'])

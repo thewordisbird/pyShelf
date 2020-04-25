@@ -11,8 +11,6 @@ class DevelopmentConfig(Config):
     FIREBASE_PROJECT = os.environ.get('FIREBASE_PROJECT')
     PAGINATION_LIMIT = os.environ.get('PAGINATION_LIMIT') or 10
     WTF_CSRF_ENABLED = True
-    MAX_CONTENT_LENGTH=8 * 1024 * 1024,
-    ALLOWED_EXTENSIONS=set(['png', 'jpg', 'jpeg', 'gif'])
 
 class TestingConfig(Config):
     TESTING = True
@@ -20,5 +18,3 @@ class TestingConfig(Config):
     FIREBASE_PROJECT = os.environ.get('FIREBASE_PROJECT')
     PAGINATION_LIMIT = os.environ.get('PAGINATION_LIMIT') or 10
     WTF_CSRF_ENABLED = False
-    MAX_CONTENT_LENGTH=8 * 1024 * 1024,
-    ALLOWED_EXTENSIONS=set(['png', 'jpg', 'jpeg', 'gif'])

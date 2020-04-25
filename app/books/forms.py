@@ -11,7 +11,7 @@ class BookForm(FlaskForm):
     cover_image = StringField('Cover Image')
     submit = SubmitField()
 
-    # Test 
+    # test
 
 
 

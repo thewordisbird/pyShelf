@@ -47,7 +47,8 @@
                     </div>  
                 </div>
                 <div class="col s4">
-                    {% if book.cover_img != '' %}   
+                    
+                    {% if book.cover_img != "" %}   
                         <div class="delete-img">
                             <!--<a href="{{ url_for('books.delete_cover', book_id=book['id']) }}">-->
                                 <i class="material-icons del-cover" id="{{ book['id'] }}"">delete</i>
@@ -93,7 +94,7 @@
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
                         document.getElementById("cover_file").value = '';
-                        document.getElementById("cover_file").value = '';
+                        document.getElementById("cover_url").value = '';
                     }
                 }
                 xhttp.open("POST", "{{ url_for('books.delete_cover') }}", true);

@@ -3,9 +3,9 @@
 {% block content %}
 
     <div class="container">
-    <h4>{{ header }}</h4>
+    <h4>Book Form</h4>
     <div class="row">
-        <form action="" method='post' class="col s12">
+        <form method="post" class="col s12" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
 
             <div class="row">
@@ -37,16 +37,23 @@
             </div>
 
             <div class="row">
-                <div class="file-field input-field col s12">
+                <div class="file-field input-field col s8">
                     <div class="btn">
-                        <span>Cover Image</span>
-                        <input type="file">
+                        <span>File</span>
+                        {{ form.cover_img(value="{{ book.cover_img }}", id="cover_file") }}
                     </div>
                     <div class="file-path-wrapper">
-                        {{ form.cover_image(class="file-path validate") }}
-                        
-                      </div>
-                    
+                        <input id=cover_url class="file-path validate" type="text" value="{{ book.cover_img }}">
+                    </div>  
+                </div>
+                <div class="col s4">
+                    {% if book.cover_img != '' %}   
+                        <div class="delete-img">
+                            <!--<a href="{{ url_for('books.delete_cover', book_id=book['id']) }}">-->
+                                <i class="material-icons del-cover" id="{{ book['id'] }}"">delete</i>
+                            <!--</a>-->
+                        </div>    
+                    {% endif %}     
                 </div>
             </div>
 
@@ -72,6 +79,29 @@
     var instances = M.Datepicker.init(elems, {
         format: 'mm/dd/yyyy'});
   });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elements = document.getElementsByClassName("del-cover");
+
+        for (var i=0; i < elements.length; i++) {
+            var book_id = elements[i].id;
+            elements[i].addEventListener('click', function(){
+                
+                var xhttp = new XMLHttpRequest;
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("cover_file").value = '';
+                        document.getElementById("cover_file").value = '';
+                    }
+                }
+                xhttp.open("POST", "{{ url_for('books.delete_cover') }}", true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send("book_id="+book_id);
+            }, false);
+        };
+    });
 </script>
 
   {% endblock %}

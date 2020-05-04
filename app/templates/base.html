@@ -19,13 +19,13 @@
                 <div class="nav-wrapper container">
                   <a href="{{ url_for('books.index') }}" class="brand-logo">Bookshelf</a>
                   <ul class="right hide-on-med-and-down">
-                    <li><a href="{{ url_for('books.add') }}">Add Book</a></li>
+                    <li><a href="{{ url_for('books.add_book') }}">Add Book</a></li>
                     <li><a href="{{ url_for('books.index') }}">Books</a></li>
                   </ul>
                   <ul id="nav-mobile" class="sidenav">
                     <a href="{{ url_for('books.index') }}" class="red lighten-2">Bookshelf</a>
                     <!--<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>-->
-                    <li><a href="{{ url_for('books.add') }}">Add Book</a></li>
+                    <li><a href="{{ url_for('books.add_book') }}">Add Book</a></li>
                     <li><a href="{{ url_for('books.index') }}">Books</a></li>
                   </ul>
                   <a href="#" data-target="nav-mobile" class="sidenav-trigger">

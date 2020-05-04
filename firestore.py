@@ -8,20 +8,8 @@ from flask import current_app, session
 # For Cloud Deployed App:
 #cred = credentials.ApplicationDefault()
 # For Locally Deployed App:
-'''
-cred = credentials.Certificate(current_app.config['FIREBASE_KEY_URL'])
-#cred = credentials.Certificate(app.config('FIRESTORE_CREDENTIALS'))
-firebase_admin.initialize_app(cred, current_app.config['FIREBASE_PROJECT'])
-
-cred = credentials.Certificate(current_app.config['FIREBASE_KEY_URL'])
-#cred = credentials.Certificate(app.config('FIRESTORE_CREDENTIALS'))
-firebase_admin.initialize_app(cred, current_app.config['FIREBASE_PROJECT'])
-
-'''
-cred = credentials.Certificate('./keys/pyshelf-firestore.json')
-#cred = credentials.Certificate(app.config('FIRESTORE_CREDENTIALS'))
-firebase_admin.initialize_app(cred, {'project': 'pyshself'})
-
+cred = credentials.Certificate(os.environ.get('FIREBASE_KEY_URL'))
+firebase_admin.initialize_app(cred, os.environ.get('FIREBASE_PROJECT'))
 
 def document_to_dict(doc):
     """Convert a Firestore document to dictionary"""
@@ -34,9 +22,9 @@ def document_to_dict(doc):
 def format_time(doc, format='%m/%d/%Y'):
     for k,v in doc.items():     
         if isinstance(v, datetime):
-            print(k,v)
+            #print(k,v)
             doc[k] = v.strftime(format)
-            print(doc[k])
+            #print(doc[k])
     return doc
 
 
@@ -101,4 +89,8 @@ def delete(book_id):
     db = firestore.client()
     book_ref = db.collection('Book').document(book_id)
     book_ref.delete()
-    
+
+def delete_cover(book_id):
+    db = firestore.client()
+    book_ref = db.collection('Book').document(book_id)
+    book_ref.update({"cover_img": ""})

@@ -5,6 +5,10 @@ from contextlib import contextmanager
 from app import create_app
 from config import TestingConfig
 from app.books import forms
+from dotenv import load_dotenv, find_dotenv
+
+# Load enviornment and flask system variables
+load_dotenv(find_dotenv())
 
 @pytest.fixture()
 def app():
@@ -90,6 +94,7 @@ def test_firestore_update(fs):
     update = fs.update(update_data, doc['id'])
     assert update['title'] == 'Update Title'
     assert update['id'] == doc['id']
+
 
 # ========== books/routes tests ==========
 @pytest.fixture
